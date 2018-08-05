@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+        .container{
+            position: relative;
+            width: 400px;
+            height: 200px;
+            margin-left: 500px;
+            margin-top: 200px;
+            border: 1px solid black;
+            overflow: hidden;
+        }
+        .lun{
+            width: 1600px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        .box{
+            width: 1600px;
+            height: 200px;
+            position: absolute;
+            transition: transform 1s ;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .picture{
+            display: inline-block;
+            width: 400px;
+            height: 200px;
+        }
+        img{
+            display: inline-block;
+            width: 400px;
+            height: 200px;
+        }
+        ul{
+            position: absolute;
+            height: 20px;
+            width: 100px;
+            z-index: 10;
+            margin-left: 180px;
+            margin-top:180px;
+        }
+        li{
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #d3d2d2;
+            border-radius: 50%;
+            z-index: 10;
+            cursor: pointer;
+        }
+        .btn1{
+            position: absolute;
+            background: #d3d2d2;
+            opacity: 0.8;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-left: -15px;
+            margin-top: 85px;
+            z-index: 100;
+        }
+        .btn2{
+            position: absolute;
+            margin-left: 385px;
+            margin-top: 85px;
+            background: #d3d2d2;
+            opacity: 0.8;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        button{
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lun">
+            
+            <div class="box b1">
+                <div class="picture a1">
+                    <img src="img/7.jpg" alt="">
+                </div><div class="picture a2">
+                    <img src="img/8.jpg" alt="">
+                </div><div class="picture a3">
+                    <img src="img/9.jpg" alt="">
+                </div><div class="picture a4">
+                    <img src="img/7.jpg" alt="">
+                </div>
+            </div>
+        
+            <ul>
+                <li style="background-color: #f40;"></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <button class="btn1"></button>
+            <button class="btn2"></button>
+        
+        </div>
+    </div>
+    <script src="jquery-3.3.1.js"></script>
+    <script>
+        var right = document.getElementsByClassName('box')[0];
+        var num = 0;
+        function a(index){
+            var n = index;
+            var b = (n*-400)+"px";
+            $('.box').stop().animate({"margin-left":b},500);
+            $('li').css("backgroundColor","#d3d2d2");
+            if(n==3){
+                $('li').eq(0).css("backgroundColor","#f40");
+            }else{
+                $('li').eq(n).css("backgroundColor","#f40");
+            }
+        }
+        function b(){
+            if(num ==3){
+                    $('.box').css("marginLeft","0px");
+                    num = 0;
+                }
+                num++;
+                a(num);
+        }
+        $(function(){
+            //右边
+            $('.btn2').click(function(){
+               b();
+            });
+
+            //左边
+            $('.btn1').click(function(){  
+                if(num ==0){
+                    $('.box').css("marginLeft","-1200px");
+                    num = 3;
+                }
+                num--;
+                a(num);
+            });
+            $('li').click(function(){
+                num = parseInt($('li').index(this));
+                a(num);
+            });
+            //轮播
+             var t = setInterval("b()",2000);
+            $('.box,ul,button').mouseover(function(event){
+                $('button').css("display","block");
+                 clearInterval(t);
+             })
+             $('.box,ul,button').mouseout(function(event){
+                $('button').css("display","none");
+                t = setInterval("b()",2000);
+             })
+             
+        })
+    </script>
+</body>
+</html>
