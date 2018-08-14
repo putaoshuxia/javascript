@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <script src="jquery-3.3.1.js"></script> -->
+    <script src="http://www.jq22.com/jquery/jquery-1.8.2.js"></script>
+    <title>Document</title>
+    <style>
+    *{
+        padding: 0;
+        margin: 0;
+        text-decoration: none;
+        list-style-type: none;
+    }
+    .wrapper{
+        width: 800px;
+        margin: 200px auto;
+    }
+    .text{
+        width: 600px;
+        height: 40px;
+        float: left;
+    }
+    .biao{
+        width: 602px;
+        border: 1px solid black;
+        display: none;
+    }
+    a{
+        display: block;
+        text-align: center;
+        line-height: 45px;
+        width: 100px;
+        height:45px;
+        background: #38f;
+        color: #fff;
+        float: left;
+        font-weight: 200;
+    }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <input type="text" class="text">
+        <a href="#">百度一下</a>
+        <ul class="biao"></ul>
+    </div>
+    <script>
+            var otext = document.getElementsByTagName('input')[0];
+            var oul = document.getElementsByTagName('ul')[0];
+            var oli = oul.getElementsByTagName('li');
+            var  ocity,url,temp,num;
+            function bian(e){
+                $('li').css("background","#fff");
+                $('li').eq(e).css("background","#e0dbdb");
+            }
+            
+            //防抖
+            function debounce(handler,delay){
+                var timer = null;
+                return function(){
+                    var _self = this,_arg = arguments;
+                    clearTimeout(timer);
+                    timer = setTimeout(function(){
+                        handler.apply(_self,_arg);
+                    },delay);
+                }
+            }
+            
+            otext.onfocus = aja;
+            //获取信息
+            function aja(){
+                ocity = otext.value;
+                url = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+ocity+"&json=1&p=3&sid=1442_26963_21079_26350_26922_20718&req=2&csor=2&pwd=w&cb=jQuery110209314890474209285_1533976448388&_=1533976448394";
+                $.ajax({
+                type:"post",
+                async: false,
+                url:url,
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'jQuery110209314890474209285_1533976448388',
+                success:function(data){
+                    oul.style.display = "block";
+                    oul.innerHTML = "";
+                    console.log(data.s); 
+                    for(var i = 0;i<data.s.length;i++){
+                        var li = document.createElement('li');
+                        li.innerHTML = data.s[i];
+                        oul.appendChild(li);
+                    }
+                    if(oul.innerHTML == ""||data.s.length == 0){
+                        oul.style.display = "none";
+                    }
+                    num = oli.length;
+                    $('li').mouseover(function(){
+                        bian($('li').index(this))
+                    });
+                    $('li').click(function(event){
+                        otext.value = $(this).html();
+                        self.location="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=2&tn=baiduhome_pg&wd="+otext.value+"&rsv_spt=1&oq=%25E9%2594%259A%25E7%2582%25B9&rsv_pq=85903c3700044374&rsv_t=df91rLMlAq8f3oAHj4ro8xQBVYTmJfQhVIvNZZntdqa4V86KpblqsnvjQlL7959frYTZ&rqlang=cn&rsv_enter=1&inputT=42251&rsv_sug1=76&rsv_sug7=101&rsv_sug3=78&rsv_sug2=0&rsv_sug4=42251"
+                        
+                    });
+                },
+                false:function(){
+                    alert('404');
+                }
+                })
+            }
+            otext.oninput = debounce(aja,500);
+            //键盘事件
+            
+            function shang(){
+                if(temp == undefined||temp == 0){
+                    temp = num-1;
+                    bian(temp);
+                }else{
+                    temp--;
+                    bian(temp);
+                }
+            }
+            function xia(){
+                if(temp == undefined||temp ==num-1){
+                    temp = 0
+                    bian(temp);
+                }else{
+                    temp++;
+                    bian(temp);
+                   
+                }
+            }
+            $(document).keydown(function(event){
+                var e = event || window.event;
+                var k = e.keyCode || e.which;
+                    switch(k) { 
+                        case 38: 
+                        shang();
+                        break;
+                        case 40:
+                        xia();
+                        break;
+                        case 13:
+                        otext.value = oli[temp].innerText;
+                        oul.style.display = "none";
+                        setTimeout(function(){
+                            self.location="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=2&tn=baiduhome_pg&wd="+otext.value+"&rsv_spt=1&oq=%25E9%2594%259A%25E7%2582%25B9&rsv_pq=85903c3700044374&rsv_t=df91rLMlAq8f3oAHj4ro8xQBVYTmJfQhVIvNZZntdqa4V86KpblqsnvjQlL7959frYTZ&rqlang=cn&rsv_enter=1&inputT=42251&rsv_sug1=76&rsv_sug7=101&rsv_sug3=78&rsv_sug2=0&rsv_sug4=42251"
+                        },100)
+                        break;
+                    }
+            })
+            $('a').click(function(){
+                self.location="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=2&tn=baiduhome_pg&wd="+otext.value+"&rsv_spt=1&oq=%25E9%2594%259A%25E7%2582%25B9&rsv_pq=85903c3700044374&rsv_t=df91rLMlAq8f3oAHj4ro8xQBVYTmJfQhVIvNZZntdqa4V86KpblqsnvjQlL7959frYTZ&rqlang=cn&rsv_enter=1&inputT=42251&rsv_sug1=76&rsv_sug7=101&rsv_sug3=78&rsv_sug2=0&rsv_sug4=42251"
+            })
+
+        
+    </script>
+</body>
+</html>
