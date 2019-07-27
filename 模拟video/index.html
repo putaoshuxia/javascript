@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            height: 100%;
+        }
+        video{
+            object-fit:fill;
+        }
+        /* .da{
+            position: relative;
+            width: 100%;
+            height: 100%;
+        } */
+        .video_player{
+            position: relative;
+            width: 1000px;
+            height: 500px;
+            margin: 0px auto;
+        }
+        video{
+            position: absolute;
+            width: 1000px;
+            height: 500px;
+            left:0;
+            top: 0;
+        }
+        .menu {
+            position: absolute;
+            width: 100%;
+            height: 36px;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        .play{
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            /* border: 1px solid white; */
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 10px;
+            margin-left: 20px;
+            top: 50%;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .time{
+            position: absolute;
+            width: 110px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            margin-left: 120px;
+            top: 50%;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .progress_bar{
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: gray;
+            opacity: 0.8;
+            left: 0px;
+            top: -2px;
+        }
+        .progress_bar div{
+            position: absolute;
+            width: 2px;
+            background: #5BBE0F;
+            left: 0;
+            top: 0;
+        }
+        .progress_bar i{
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            left: 0px;
+            top: -2px;
+            z-index: 2;
+        }
+        
+        .i_active::before{
+            content: "";
+            position: absolute;
+            background: transparent;
+            border: 20px solid rgba(0, 255, 0, 0.2);
+            border-radius: 50%;
+            left: -10px;
+            top: -10px;
+        }
+        .quick{
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            border: 1px solid white;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 10px;
+            left: 70%;
+            top: 50%;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .quick_list{
+            position: absolute;
+            width: 100px;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.7);
+            left: calc( 70% - 20px );
+            top: -150px;
+            /* color: rgb(250, 250, 250);
+            opacity: 0.5; */
+            display: none;
+        }
+        .quick_list li{
+            font-size: 14px;
+            position: relative;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            list-style: none;
+            cursor: pointer;
+            transition: all .3s;
+            color: rgb(250, 250, 250);
+            opacity: 0.5;
+        }
+        .quick_list:hover{
+            display: block;
+        }
+        .quick_list li:hover{
+            /* color: #5BBE0F; */
+            transform: scale(1.25,1.25);
+            opacity: 0.9;
+        }
+        .green{
+            color: green !important;
+            opacity: 1 !important;
+        }
+        .volume{
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            /* border: 1px solid white; */
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 10px;
+            left: 80%;
+            top: 50%;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .volume_list{
+            position: absolute;
+            width: 40px;
+            height: 130px;
+            background: rgba(0, 0, 0, 0.7);
+            left: calc( 80% + 12px );
+            top: -130px;
+            color: white;
+            border-radius: 3px;
+            display: none;
+        }
+        .volume_list:hover{
+            display: block;
+        }
+        .volume_list div:nth-child(1){
+            width: 2px;
+            height: 100px;
+            background: gray;
+            opacity: 0.8;
+            margin: 20px auto 10px;
+            border-left: 7px solid rgba(0, 0, 0, 0.8);
+            border-right: 7px solid rgba(0, 0, 0, 0.8);
+            
+        }
+        .volume_list i{
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+            top: 50px;
+            left: 16px;
+        }
+        .volume_list span{
+            position: absolute;
+            font-size: 10px;
+            top: 2px;
+            left: 10px;
+        }
+        .all{
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            /* border: 1px solid white; */
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 10px;
+            left: 90%;
+            top: 50%;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .tubiao{
+            height: 30px;
+            transition: all 0.2s;
+        }
+        .tubiao:hover{
+            transform: scale(1.25,1.25);
+        }
+        .donghua{
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            left: calc( 50% - 75px);
+            top: calc( 50% - 75px);
+            border-radius: 50%;
+            /* opacity: 0.6; */
+            animation-timing-function: ease-in; 
+            display: none;
+
+        }
+        .donghua div{
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%; 
+            position: relative;
+        }
+        .donghua div img{
+            position: absolute;
+            left: calc( 50% - 30px);
+            top: calc( 50% - 30px);
+            width: 60px;
+            height: 60px;
+        }
+        .oimg{
+            width: 200px;
+            height: 100px;
+            /* background: red; */
+            position: absolute;
+            z-index: 10;
+            bottom: 50px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="video_player">
+        <div class="donghua">
+            <div>
+                <img src="./img/暂停.png" alt="">
+            </div>
+        </div>
+        <video src="./你的名字.mp4" ></video>
+        <img src="" class="oimg" alt="">
+        <div class="menu">
+            <div class="play">
+                <img class="tubiao" src="./img/播放.png" alt="">
+            </div>
+            <div class="time">00:00/00:00</div>
+            <div class="progress_bar">
+                <div></div>
+                <i></i>
+            </div>
+            <div class="quick">倍速</div>
+            <div class="quick_list">
+                <ul>
+                    <li data="2">2 X</li>
+                    <li data="1.5">1.5X</li>
+                    <li data="1.25">1.25X</li>
+                    <li data="1.0" class="green">正常</li>
+                    <li data="0.75">0.75X</li>
+                </ul>
+            </div>
+            <div class="volume"><img class="tubiao" src="./img/声音.png" alt=""></div>
+            <div class="volume_list">
+                <div><i style="top:66px"></i></div>
+                <span></span>
+            </div>
+            <div class="all"><img class="tubiao" src="./img/全屏.png" alt=""></div>
+        </div>
+    </div>
+    <script>
+        // 暂停开始动画
+        //缩略图
+        
+        function toTwo(num){
+            if(num&&typeof num=='number'){
+                if(num>9){
+                    return num
+                }else{
+                    return '0'+num;
+                }
+            }else{
+                return '00'
+            }   
+        }
+        
+        var videoPlayer = document.getElementsByClassName('video_player')[0];
+        var menu = document.getElementsByClassName('menu')[0];
+        var ovideo = document.getElementsByTagName('video')[0];
+        var play = document.getElementsByClassName('play')[0];
+        var time = document.getElementsByClassName('time')[0];
+        var progressBar = document.getElementsByClassName('progress_bar')[0];
+        var quick = document.getElementsByClassName('quick')[0];
+        var quickList = document.getElementsByClassName('quick_list')[0];
+        var btnVolume = document.getElementsByClassName('volume')[0];
+        var volume = document.getElementsByClassName('volume_list')[0];
+        var tuodong = volume.getElementsByTagName('i')[0];
+        var all = document.getElementsByClassName('all')[0];
+        var donghua = document.getElementsByClassName('donghua')[0];
+        var oimg = document.getElementsByClassName('oimg')[0];
+        var timer;
+        ovideo.volume = 0.5;
+
+        //动画
+        function animation(url){
+            url = url||'./img/暂停.png';
+            donghua.getElementsByTagName('img')[0].src = url;
+
+            var t = 10,d,x = 1,y = 1;
+            donghua.style.display = 'block';
+            d = setInterval(function(){
+                if(--t){
+                    
+                    x = x*0.8;
+                    donghua.style.opacity = x;
+                }else{
+                    donghua.style.display = 'none';
+                    clearInterval(d);
+                }
+            },70)
+        }
+        
+        // ;
+        videoPlayer.addEventListener('mouseleave',function(){
+            volume.style.display = 'none';
+            quickList.style.display = 'none'; 
+        })
+        //暂停播放
+        // videoPlayer.addEventListener('mouseenter',function(){
+        //     menu.style.display = 'block';
+        // })
+        videoPlayer.addEventListener('mouseleave',function(){
+            menu.style.display = 'none';
+        })
+        let xtimer;
+        videoPlayer.addEventListener('mousemove',function(){
+            menu.style.display = 'block';
+            clearTimeout(xtimer)
+            xtimer = setTimeout(tonone,3000);
+
+        })
+        function tonone(){
+            menu.style.display = 'none';
+        }
+        // videoPlayer.addEventListener('mouseleave',function(){
+        //     menu.style.display = 'none';
+        // })
+        play.addEventListener('click',function(){
+            if(ovideo.paused){
+                play.getElementsByTagName('img')[0].src = './img/暂停.png';
+                ovideo.play();
+            }else{
+                ovideo.pause();
+                play.getElementsByTagName('img')[0].src = './img/播放.png';
+            }  
+        })
+        ovideo.addEventListener('click',function(){
+            if(ovideo.paused){
+                play.getElementsByTagName('img')[0].src = './img/暂停.png';
+                ovideo.play();
+            }else{
+                ovideo.pause();
+                play.getElementsByTagName('img')[0].src = './img/播放.png';
+            } 
+            // return false; 
+        });
+        //键盘事件
+        document.addEventListener('keyup',function(e){
+            e = e||window.event;
+            if(e.keyCode==32){
+                if(ovideo.paused){
+                    play.getElementsByTagName('img')[0].src = './img/暂停.png';
+                    ovideo.play();
+                    animation();
+                }else{
+                    ovideo.pause();
+                    play.getElementsByTagName('img')[0].src = './img/播放.png';
+                    animation('./img/播放.png');
+                }
+                
+                
+            }
+            if(e.keyCode==37){
+                ovideo.currentTime = ovideo.currentTime-5*ovideo.playbackRate;
+            }
+            if(e.keyCode==39){
+                ovideo.currentTime = ovideo.currentTime+5*ovideo.playbackRate;
+            }
+            //空  32  左  37 右 39
+        })
+        //时间
+        ovideo.oncanplay = function(){
+            volume.getElementsByTagName('span')[0].innerHTML = 50+'%';
+            
+            setTime();
+            timer = setInterval(setTime,1000)
+        }
+        function setTime(){
+            var total = Math.ceil(ovideo.duration);
+            total = toTwo(parseInt(total/60))+':'+toTwo(parseInt(total%60))
+            var nowTime = parseInt(ovideo.currentTime);
+            nowTime = toTwo(parseInt(nowTime/60))+":"+toTwo(parseInt(nowTime%60));
+            time.innerHTML = `${nowTime} / ${total}`
+            var width = ovideo.currentTime/ovideo.duration*progressBar.clientWidth;
+            // console.log(width);
+            progressBar.getElementsByTagName('div')[0].style.width = width+'px';
+            progressBar.getElementsByTagName('i')[0].style.left = width+'px';
+        }
+        //进度条
+        progressBar.addEventListener('mouseenter',function(){
+            progressBar.style.height = "14px";
+            progressBar.style.top = "-14px";
+            progressBar.getElementsByTagName('div')[0].style.height = '14px';
+            progressBar.getElementsByTagName('i')[0].style.height = '18px';
+            progressBar.getElementsByTagName('i')[0].style.width = '18px';
+            progressBar.getElementsByTagName('i')[0].addEventListener('mouseenter',function(e){
+                e.target.classList.add('i_active');
+            })
+            oimg.style.display = 'block';
+        })
+        progressBar.addEventListener('mouseleave',function(){
+            progressBar.style.height = "2px";
+            progressBar.style.top = "-2px";
+            progressBar.getElementsByTagName('div')[0].style.height = '2px';
+            progressBar.getElementsByTagName('i')[0].style.height = '6px';
+            progressBar.getElementsByTagName('i')[0].style.width = '6px';
+            progressBar.getElementsByTagName('i')[0].addEventListener('mouseleave',function(e){
+                e.target.classList.remove('i_active');
+            })
+            oimg.style.display = 'none';
+        })
+        progressBar.addEventListener('click',function(e){
+            var location = e.clientX-videoPlayer.offsetLeft;
+            var width = progressBar.clientWidth;
+            var targetTime = location/width*ovideo.duration;
+            ovideo.currentTime = targetTime;
+            if(ovideo.paused){
+                play.getElementsByTagName('img')[0].src = './img/暂停.png';
+                ovideo.play();
+            }
+        })
+        //显示图片
+        progressBar.onmousemove = function(e){
+            e.preventDefault()
+            var e = e|| window.event;
+            disX = e.clientX-videoPlayer.offsetLeft;
+            if(disX>100){
+                oimg.style.left = disX-100+'px';
+                if(disX+100>progressBar.clientWidth){
+                    oimg.style.left = progressBar.clientWidth-200+'px';
+                }
+            }
+            var x = Math.ceil(disX/progressBar.clientWidth*ovideo.duration);
+            showImage(x);
+        }
+        function showImage(x) {
+            //截图
+            // var canvas = document.createElement("canvas");
+            // canvas.width = ovideo.videoWidth;
+            // canvas.height = ovideo.videoHeight;
+            // canvas.getContext('2d')
+            //     .drawImage(ovideo, 0, 0, canvas.width, canvas.height);
+            // oimg.src = canvas.toDataURL('image./png');
+            //后端数据
+            oimg.src = 'http://localhost:8080/jpg/'+x+'.jpg'
+        };
+        //拖拽进度条
+        progressBar.getElementsByTagName('i')[0].onmousedown = function(e){
+            e.preventDefault()
+            var disX;
+            clearInterval(timer);
+            document.onmousemove = function(e){
+                e.preventDefault()
+                var e = e|| window.event;
+                disX = e.clientX-videoPlayer.offsetLeft;
+                progressBar.getElementsByTagName('div')[0].style.width = disX+'px';
+                progressBar.getElementsByTagName('i')[0].style.left = disX+'px';
+            }
+            document.onmouseup = function(){
+                ovideo.currentTime = disX/progressBar.clientWidth*ovideo.duration
+                document.onmousemove = null;
+                document.onmouseup = null;
+            }
+        }
+        //倍速
+        quick.addEventListener('click',function(){
+            if(quickList.style.display=='block'){
+                quickList.style.display = 'none';
+            }else{
+                quickList.style.display = 'block';
+            }  
+        })
+        quickList.addEventListener('mouseleave',function(){
+            quickList.style.display = 'none';
+        })
+        quickList.addEventListener('click',function(e){
+            quickList.style.display = 'none';
+            var event = e || window.event;
+            var target = event.target || event.srvElement;
+            ovideo.playbackRate = target.getAttribute('data');
+
+            var beusu = ovideo.playbackRate;
+            var List = quickList.getElementsByTagName('li');
+            for(let i = 0 ;i<5;i++){
+                List[i].classList = '';
+            }
+            target.classList = 'green';
+        })
+        //声音
+        var topValue = 454,bottomValue = topValue-100,centerValue = (topValue+bottomValue)/2;
+
+        btnVolume.addEventListener('mouseenter',function(e){
+            volume.style.display = 'block' 
+        })
+        volume.addEventListener('mouseleave',function(e){
+            volume.style.display = 'none' 
+        })
+
+        volume.getElementsByTagName('div')[0].onclick = function(e){
+            var juedui = e.clientY-videoPlayer.offsetTop;
+            tuodong.style.top = juedui-334+'px';
+            ovideo.volume = (topValue-juedui)/100;
+            volume.getElementsByTagName('span')[0].innerHTML = topValue-juedui+'%';
+        }
+        volume.getElementsByTagName('i')[0].onmousedown = function(e){
+            var dY ;
+            e.preventDefault();
+            document.onclick = function(e){
+                dY = e.clientY;
+                // console.log(e.clientY)
+            }
+            var oheight = centerValue;
+            disY = e.clientY-videoPlayer.offsetTop;
+            // console.log(disY,e.clientY);
+            
+            var disY;
+            //340-440   390中间+14  454 767  670
+            document.onmousemove = function(e){
+                e.preventDefault();
+                var e = e|| window.event;
+                var juedui = e.clientY-videoPlayer.offsetTop;
+                var endY = (disY-(e.clientY-videoPlayer.offsetTop))/100;//0.5~-0.5
+                if(juedui>=bottomValue&&juedui<=topValue){
+                    tuodong.style.top = juedui-334+'px';
+                    ovideo.volume = (topValue-juedui)/100;
+                    volume.getElementsByTagName('span')[0].innerHTML = topValue-juedui+'%';
+                }
+            }
+            document.onmouseup = function(){
+                document.onmousemove = null;
+                document.onmouseup = null;
+            }
+        }
+        
+        // var flag = 1,disY,disZ,disV;
+        // volume.getElementsByTagName('i')[0].onmousedown = function(e){
+        //     disY  = e.clientY-videoPlayer.offsetTop,//之前的距离
+        //     disZ = tuodong.style.top.match(/(\d+)px$/)[1]*1,//之前div的高
+        //     disV = ovideo.volume;//之前的声音
+            
+        //     var nowDy;
+            
+        //     if(flag){
+        //         dy = tuodong.style.top.match(/(\d+)px$/)[1]*1,//之前的top高
+        //         flag = 0;
+        //         console.log(dy,flag);
+        //     }else{
+        //         ody = tuodong.style.top.match(/(\d+)px$/)[1]*1,//之前的top高
+        //         console.log('kjjh');
+        //     }
+        //     e.preventDefault();
+        //     document.onmousemove = function(e){
+        //         nowDy = tuodong.style.top.match(/(\d+)px$/)[1]*1
+        //         e.preventDefault();
+        //         var e = e|| window.event;
+        //         nowY = e.clientY-videoPlayer.offsetTop;
+        //         // console.log(nowDy,dy)
+        //         if(nowDy-dy>-60&&nowDy-dy<60){
+        //             tuodong.style.top = disZ+nowY-disY+'px';
+        //             if(disV+(disY-nowY)/100<0){
+        //                 ovideo.volume = 0
+        //             }else if(disV+(disY-nowY)/100>1){
+        //                 ovideo.volume = 1;
+        //             }else{
+        //                 ovideo.volume = disV+(disY-nowY)/100;
+        //             }
+                    
+                    
+        //         }else{
+
+        //         }
+        //         if(nowDy-dy>-50){
+
+        //         }
+        //     }
+        //     document.onmouseup = function(){
+        //         disZ =0;disV = 0;
+        //         document.onmousemove = null;
+        //         document.onmouseup = null;
+        //     }
+        // }
+        //全屏
+        all.addEventListener('click',function(){
+            if(topValue==454){
+                topValue = window.innerHeight-47;
+                width = document.body.clientWidth;
+                height = window.innerHeight;
+            }else{
+                topValue=454;
+                width = 1000;
+                height = 500;
+            }
+            var width,height;
+            videoPlayer.style.width = width+'px';
+            videoPlayer.style.height = height+'px';
+            ovideo.style.width = width+'px';
+            ovideo.style.height = height+'px';
+        })
+    </script>
+</body>
+</html>
